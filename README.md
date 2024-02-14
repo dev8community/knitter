@@ -29,6 +29,13 @@ $ pip install git+https://github.com/dev8community/knitter
 
 At the present moment, Knitter is not available at [PyPI](https://pypi.org/).
 
+## Uninstallation
+To uninstall Knitter, simply run:
+
+```bash
+$ pip uninstall Knitter
+```
+
 ## Usage
 ### Commands
 Knitter only has two subcommands: `build` and `serve`. Running `knitter build` will make Knitter generate a static distributable website inside of a `dist/` folder. That `dist/` folder is the generated website, and can be copied for deployment.

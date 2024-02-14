@@ -1,6 +1,6 @@
 [project]
 name = "Knitter"
-version = "0.1.0-alpha"
+version = "0.1.0a1"
 description = "A static site generator originally built for use in the development of the Dev8 website."
 authors = [
     {name = "Sean Francis N. Ballais", email = "sean@seanballais.com"},
