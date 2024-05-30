@@ -42,7 +42,7 @@ with open('knitter.toml', 'rb') as f:
 
 loaded_data: dict[str, any] = {}
 for name, data in config_data['data'].items():
-    with open(data) as f:
+    with open(data, encoding='utf-8') as f:
         loaded_data[name] = json.load(f)
 
         is_data_table: bool = ('headings' in loaded_data[name] and
@@ -116,7 +116,7 @@ def _build(base_dist_dir: Path = Path('dist'), mode: str = 'production'):
 
         dest.parent.mkdir(exist_ok=True, parents=True)
 
-        with open(dest, 'w') as f:
+        with open(dest, 'w', encoding='utf-8') as f:
             f.write(contents)
 
     # Preprocess files.
@@ -128,7 +128,11 @@ def _build(base_dist_dir: Path = Path('dist'), mode: str = 'production'):
 
         # Preprocess via SASS.
         try:
-            subprocess.run(['sass', src_file, target_path])
+            executable: str = 'sass'
+            if sys.platform.startswith('win32'):
+                executable: str = 'sass.bat'
+
+            subprocess.run([executable, src_file, target_path])
         except FileNotFoundError as e:
             err_msg: str = ('sass not found. Make sure Sass is '
                             'installed and in your PATH. Build cancelled')
@@ -136,11 +140,11 @@ def _build(base_dist_dir: Path = Path('dist'), mode: str = 'production'):
 
         if mode == 'production':
             # Minify.
-            with open(target_path) as css_file:
+            with open(target_path, encoding='utf-8') as css_file:
                 css_src: str = css_file.read()
 
             minified_css: str = rcssmin.cssmin(css_src)
-            with open(target_path, 'w') as css_file:
+            with open(target_path, 'w', encoding='utf-8') as css_file:
                 css_file.write(minified_css)
 
     # Copy assets.
@@ -161,7 +165,7 @@ def _serve(base_dist_dir: Path = Path('dist')):
     for html_file in config_data['routes'].values():
         watch_list.append(html_file)
 
-        with open(html_file) as f:
+        with open(html_file, encoding='utf-8') as f:
             contents: str = f.read()
 
         ast: jinja2.Template = jinja_env.parse(contents)
@@ -203,7 +207,7 @@ def _serve(base_dist_dir: Path = Path('dist')):
 
 def _find_scss_imports(starting_file: Path) -> set[Path]:
     imported_files: set[Path] = set()
-    with open(starting_file) as f:
+    with open(starting_file, encoding='utf-8') as f:
         for line in f.readlines():
             if '@import' in line:
                 imported_file: str = line.replace('@import', '')
